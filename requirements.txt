@@ -2,3 +2,4 @@ langchain
 sqlparse
 langchain-community
 openai
+python-dotenv
