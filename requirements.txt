@@ -1,0 +1,4 @@
+langchain
+sqlparse
+langchain-community
+openai
