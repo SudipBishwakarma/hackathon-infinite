@@ -87,6 +87,10 @@ def start_chat():
         # You: What does the mapping script do for discharge_status?
         # You: Are there null checks for payer_id?
         # You: What datatype mismatches are present?
+        # Which column mappings are missing?
+        # Does the script handle nulls for required fields?
+        # Are any hardcoded values used?
+        # Which source layouts map to the standard format version 3.2?
 
 
 if __name__ == "__main__":

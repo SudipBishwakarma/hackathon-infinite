@@ -1,5 +1,41 @@
-# Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,pycharm
-# Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,pycharm
+# Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,nextjs
+# Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,nextjs
+
+### NextJS ###
+# dependencies
+frontend/node_modules
+frontend/.pnp
+.pnp.js
+
+# testing
+frontend/coverage
+
+# next.js
+frontend/.next/
+frontend/out/
+
+# production
+frontend/build
+
+# misc
+frontend/.DS_Store
+frontend/*.pem
+
+# debug
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnpm-debug.log*
+
+# local env files
+frontend/.env*.local
+
+# vercel
+frontend/.vercel
+
+# typescript
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
 
 ### PyCharm ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -305,4 +341,4 @@ pyrightconfig.json
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,pycharm
+# End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,nextjs
