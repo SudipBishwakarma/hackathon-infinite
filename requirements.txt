@@ -3,3 +3,5 @@ sqlparse
 langchain-community
 openai
 python-dotenv
+jupyterlab
+langchain[openai]
