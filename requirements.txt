@@ -6,3 +6,4 @@ sqlparse
 openai
 python-dotenv
 PyMuPDF
+SQLAlchemy 

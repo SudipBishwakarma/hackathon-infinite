@@ -1,9 +1,15 @@
 from typing import List, AsyncGenerator
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, HTMLResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, func, and_
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
+import enum
+from datetime import datetime
+from sqlalchemy import Enum
 
 # from ragService import start_chat
 import random
@@ -11,6 +17,7 @@ import random
 load_dotenv()
 
 app = FastAPI()
+DATABASE_URL = "sqlite:///./database.db"
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,6 +26,35 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+
+class RoleEnum(str, Enum):
+    user = "user"
+    assistant = "assistant"
+
+class ChatOut(BaseModel):
+    uuid: str
+    message: str
+    role: str
+    createdDt: datetime
+
+    class Config:
+        orm_mode = True
+
+class Chat(Base):
+    __tablename__ = "chats"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    uuid = Column(String, index=True)
+    message = Column(String)
+    role = Column(String, nullable=False)
+    createdDt = Column(DateTime, default=datetime.utcnow)
+
+Base.metadata.create_all(bind=engine)
 
 responses = [
     """
@@ -260,13 +296,24 @@ column_description: Code for identifying market category. See Appendix K: Market
 class ChatRequest(BaseModel):
     question: str
     history: List[dict]
+    uuid: str
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @app.get("/")
 def home():
     return HTMLResponse("<center><h1>API service is running...</h1></center>")
 
 @app.post("/chat")
-async def chat_stream(request: ChatRequest):
+async def chat_stream(request: ChatRequest, db: Session = Depends(get_db)):
+    chat = Chat(uuid=request.uuid, message=request.question, role="user")
+    db.add(chat)
+    db.commit()
     def stream_response() -> AsyncGenerator[str, None]:
         # chat_history = request.history
         # user_input = request.question
@@ -279,6 +326,36 @@ async def chat_stream(request: ChatRequest):
         #     if chunk.choices[0].delta.content:
                 # yield chunk.choices[0].delta.content
         response = responses[random.randint(0, len(responses)-1)]
+        chat = Chat(uuid=request.uuid, message=response, role="assistant")
+        db.add(chat)
+        db.commit()
         yield response
 
     return StreamingResponse(stream_response(), media_type="text/plain")
+
+
+@app.get("/chats", response_model=List[ChatOut])
+async def get_chat(db: Session = Depends(get_db)):
+    subquery = (
+        db.query(
+            Chat.uuid,
+            func.min(Chat.createdDt).label("first_created")
+        )
+        .group_by(Chat.uuid)
+        .subquery()
+    )
+
+    chats = (
+        db.query(Chat)
+        .join(
+            subquery,
+            and_(
+                Chat.uuid == subquery.c.uuid,
+                Chat.createdDt == subquery.c.first_created
+            )
+        )
+        .order_by(Chat.createdDt.asc())
+        .all()
+    )
+
+    return chats
