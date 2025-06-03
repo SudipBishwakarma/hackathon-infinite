@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "PL/SQL Auditor",
   description: "Audit PL/SQL scripts and check if the logic is implemented correctly based on business rules mapping and data model. If not, suggest correct mapping based on raw table data models and target standard data model.",
+  icons: "https://cdn-icons-png.flaticon.com/128/3558/3558860.png"
 };
 
 export default function RootLayout({
