@@ -1,27 +1,28 @@
-
 import os
-from openai import AzureOpenAI
 from dotenv import load_dotenv
+from openai import AzureOpenAI
+from openai.types.chat import (
+    ChatCompletionSystemMessageParam,
+    ChatCompletionUserMessageParam,
+    ChatCompletionAssistantMessageParam,
+)
 
 # Load environment variables from .env file
 load_dotenv()
 
-deployment_name = "gpt-4o" 
-
-
 client = AzureOpenAI(
   azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT"), 
   api_key=os.getenv("AZURE_OPENAI_API_KEY"),  
-  api_version="2024-05-01-preview"
+  api_version=os.getenv("AZURE_OPENAI_API_VERSION")
 )
 
 response = client.chat.completions.create(
-    model="gpt-4o", # model = "deployment_name".
+    model=os.getenv("DEPLOYMENT_NAME"),
     messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Does Azure OpenAI support customer managed keys?"},
-        {"role": "assistant", "content": "Yes, customer managed keys are supported by Azure OpenAI."},
-        {"role": "user", "content": "Do other Azure services support this too?"}
+        ChatCompletionSystemMessageParam(role="system", content="You are a helpful assistant."),
+        ChatCompletionUserMessageParam(role="user", content="Does Azure OpenAI support customer managed keys?"),
+        ChatCompletionAssistantMessageParam(role="assistant", content="Yes, customer managed keys are supported by Azure OpenAI."),
+        ChatCompletionUserMessageParam(role="user", content="Do other Azure services support this too?")
     ]
 )
 

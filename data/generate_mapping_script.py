@@ -8,7 +8,8 @@ def generate_mapping_script(source_table, source_columns, target_table, target_c
         match_expr = match if match else "NULL"
         mapping.append(f"    {match_expr} AS {tgt_col}")
     insert_clause = f"INSERT INTO {target_table} (\n    {', '.join(target_columns)}\n)"
-    select_clause = f"SELECT\n{',\n'.join(mapping)}\nFROM {source_table};"
+    select_clause = "SELECT\n" + ",\n".join(mapping) + f"\nFROM {source_table};"
+
     return f"{insert_clause}\n{select_clause}"
 
 
