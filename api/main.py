@@ -7,11 +7,9 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, func, and_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-import enum
 from datetime import datetime
 from sqlalchemy import Enum
 
-# from ragService import start_chat
 from ragAgent import start_chat
 import random
 
