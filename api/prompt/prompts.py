@@ -113,7 +113,7 @@ Your responsibilities:
 Respond strictly in this JSON format with following key and value pairs:
   "correct_script": "<final updated PL/SQL script as a string>",
   "remarks": "<brief explanation of what was fixed or optimized>"
-  "markdown": "The plain text response formatted as Markdown"
+  "markdown": "<the plain text response formatted as Markdown>"
 
 """
 

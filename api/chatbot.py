@@ -1,7 +1,9 @@
+from langchain_core.messages import AIMessage, HumanMessage
 from prompt.templates import template
 from chain.chains import guardrail_chain, feature_extractor_chain, auditor_chain, fixer_chain
 from utils.config import Config
 from utils.logger import Logger
+from utils.db_utils import RoleEnum
 
 config = Config()
 logger = Logger.get_logger(name=config.app_name, level=config.log_level)
@@ -172,33 +174,65 @@ data_type: varchar
 column_description: Code for identifying market category. See Appendix K: Market Category Codes which defines the market category by size and or association to which the policy is directly sold and issued. Report subscribers (not employees).
 """
 
-def transform_response(feature_extractor: dict, auditor: dict, fixer: dict):
-    # feature_message = f"""**Tables:** \n {feature_extractor.get("tables")} \n **Columns:** \n {feature_extractor.get("columns")}"""
-    # auditor_message = f"""\n {auditor.get("remarks", "")} \n {auditor.get("issues", "")}"""
-    # fixed_message = f"""\n{fixer.get("remarks", "")} \n {fixer.get("correct_script", "")}"""
-    # message = f"""{feature_message} \n {auditor_message} \n {fixed_message}"""
-    message = f"{feature_extractor.get('markdown', '')} \n {auditor.get('markdown', '')} \n {fixer.get('markdown', '')}"
-    return message
+def format_history(history: list[dict]) -> list[AIMessage | HumanMessage]:
+    """Format the chat history to Langchain message objects."""
+    formatted_history = []
+    for message in history:
+        if message['role'] == RoleEnum.user:
+            formatted_history.append(HumanMessage(content=message['message']))
+        elif message['role'] == RoleEnum.assistant:
+            formatted_history.append(AIMessage(content=message['message']))
+    return formatted_history
 
-def start_chat(question):
-    chat_history = []
-
+def start_chat(question: str, history: list[dict]) -> tuple:
+    """Main function to handle the chat interaction."""
     logger.debug(f"***Received question:\n{question}")
+    chat_history = format_history(history)
 
-    ai_message_guardrail = guardrail_chain.invoke({"history": chat_history, "question": question})
-    logger.debug(f"***Guardrail AI Message:\n{ai_message_guardrail}")
+    try:
+        ai_message_guardrail: dict = guardrail_chain.invoke({"history": chat_history, "question": question})
+        guardrail_prompt = template["guardrail"].invoke({"history": chat_history, "question": question}).to_string()
+        logger.debug(f"***Guardrail Prompt:\n{guardrail_prompt}")
+        logger.debug(f"***Guardrail AI Message:\n{ai_message_guardrail}")
+        if not ai_message_guardrail.get("valid_input"):
+            logger.warning("Invalid input detected by guardrail chain.")
+            return "Please ask me questions related to PL/SQL.", None
+    except Exception as e:
+        logger.error(f"Guardrail chain failed: {e}")
+        return "Please ask me questions related to PL/SQL.", None
 
-    ai_message_feature_extractor = feature_extractor_chain.invoke({"history": chat_history, "question": question})
-    logger.debug(f"***Feature Extractor AI Message:\n{ai_message_feature_extractor}")
+    try:
+        ai_message_feature_extractor: dict = feature_extractor_chain.invoke({"history": chat_history, "question": question})
+        feature_extractor_prompt = template["feature_extractor"].invoke({"history": chat_history, "question": question}).to_string()
+        logger.debug(f"***Feature Extractor Prompt:\n{feature_extractor_prompt}")
+        logger.debug(f"***Feature Extractor AI Message:\n{ai_message_feature_extractor}")
+    except Exception as e:
+        logger.error(f"Feature extractor chain failed: {e}")
+        ai_message_feature_extractor = {}
 
-    context = template["context"].invoke({"src_dm": src_dm, "src_dd": src_dd, "tar_dm": tar_dm, "tar_dd": tar_dd})
-    logger.debug(f"***Context:\n{context.to_string()}")
+    context = ""
+    if ai_message_feature_extractor:
+        #TODO RAG Implementation to fetch context from vector db
+        context = template["context"].invoke({"src_dm": src_dm, "src_dd": src_dd, "tar_dm": tar_dm, "tar_dd": tar_dd})
+        logger.debug(f"***Context:\n{context.to_string()}")
 
     ai_message_auditor = auditor_chain.invoke({"history": chat_history, "context": context, "question": question})
+    auditor_prompt = template["auditor"].invoke({"history": chat_history, "context": context, "question": question}).to_string()
+    logger.debug(f"***Auditor Prompt:\n{auditor_prompt}")
     logger.debug(f"***Auditor AI Message:\n{ai_message_auditor}")
+    if not ai_message_auditor.get("issues_found"):
+        chat_history.extend([HumanMessage(content=question), AIMessage(content=ai_message_auditor.get("markdown", ""))])
+        return (
+            f'{ai_message_feature_extractor.get("markdown")}\n{ai_message_auditor.get("markdown", "")}',
+            ai_message_auditor.get("markdown", "")
+        )
 
     ai_message_fixer = fixer_chain.invoke({"history": chat_history, "audit": ai_message_auditor, "context": context, "question": question})
+    fixer_prompt = template["fixer"].invoke({"history": chat_history, "audit": ai_message_auditor, "context": context, "question": question}).to_string()
+    logger.debug(f"***Fixer Prompt:\n{fixer_prompt}")
     logger.debug(f"***Fixer AI Message:\n{ai_message_fixer}")
-
-    response = transform_response(ai_message_feature_extractor, ai_message_auditor, ai_message_fixer)
-    return response
+    chat_history.extend([HumanMessage(content=question), AIMessage(content=ai_message_fixer.get("markdown", ""))])
+    return (
+        f'{ai_message_feature_extractor.get("markdown")}\n{ai_message_auditor.get("markdown", "")}\n{ai_message_fixer.get("markdown", "")}',
+        ai_message_fixer.get("markdown", "")
+    )
