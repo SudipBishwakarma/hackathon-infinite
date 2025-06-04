@@ -134,6 +134,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
                         }
                     </div>
                 ))}
+                {isStreaming && <ChatSkeleton />}
             </div>
 
             <div

@@ -12,6 +12,7 @@ from datetime import datetime
 from sqlalchemy import Enum
 
 # from ragService import start_chat
+from ragAgent import start_chat
 import random
 
 load_dotenv()
@@ -373,3 +374,16 @@ async def get_chats_by_uuid(
         .all()
     )
     return chats
+
+
+class TestChatRequest(BaseModel):
+    question: str
+
+@app.post("/test")
+async def stream(request: TestChatRequest):
+    def stream_response() -> AsyncGenerator[str, None]:
+        question = request.question
+        response = start_chat(question)
+        yield response
+
+    return StreamingResponse(stream_response(), media_type="text/plain")
