@@ -5,3 +5,5 @@ openai
 python-dotenv
 jupyterlab
 langchain[openai]
+PyMuPDF
+SQLAlchemy
