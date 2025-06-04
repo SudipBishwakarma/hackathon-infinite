@@ -1,22 +1,24 @@
+import random
+from datetime import datetime, timezone
 from typing import List, AsyncGenerator
+
 from fastapi import Depends, FastAPI, Path
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, HTMLResponse
 from pydantic import BaseModel
-from dotenv import load_dotenv
+
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, func, and_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-from datetime import datetime
 from sqlalchemy import Enum
 
+from utils.config import Config
 from ragAgent import start_chat
-import random
 
-load_dotenv()
 
+config = Config()
 app = FastAPI()
-DATABASE_URL = "sqlite:///./database.db"
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(config.database_url, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -45,13 +47,13 @@ class ChatOut(BaseModel):
         orm_mode = True
 
 class Chat(Base):
-    __tablename__ = "chats"
+    __tablename__ = config.table_name
     
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     uuid = Column(String, index=True)
     message = Column(String)
     role = Column(String, nullable=False)
-    createdDt = Column(DateTime, default=datetime.utcnow)
+    createdDt = Column(DateTime, default=datetime.now(timezone.utc))
 
 Base.metadata.create_all(bind=engine)
 

@@ -7,3 +7,5 @@ jupyterlab
 langchain[openai]
 PyMuPDF
 SQLAlchemy
+fastapi
+uvicorn
