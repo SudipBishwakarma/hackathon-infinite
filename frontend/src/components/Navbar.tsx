@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link"
+import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Drawer from "react-modern-drawer"
 import 'react-modern-drawer/dist/index.css'
 
 const Navbar = () => {
-    const [isOpen, setIsOpen] = useState(true)
+    const params = useParams()
+    const [isOpen, setIsOpen] = useState(false)
     const [chatHistory, setChatHistory] = useState([])
 
     useEffect(() => {
@@ -44,7 +46,7 @@ const Navbar = () => {
                                 <Link 
                                     href={`/c/${history.uuid}`} 
                                     key={history.uuid}
-                                    className="mb-1 block text-sm rounded-md text-gray-700 p-2 hover:bg-gray-200"
+                                    className={`mb-1 block text-sm rounded-md text-gray-700 p-2 hover:bg-gray-200 ${params?.chatid == history.uuid && "bg-gray-200"}`}
                                 >
                                     {history.message}
                                 </Link>

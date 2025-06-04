@@ -1,11 +1,19 @@
 'use client';
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import MarkdownPreview from '@uiw/react-markdown-preview';
+import { v4 as uuidv4 } from 'uuid';
+import ChatSkeleton from './ChatSkeleton';
 
-export default function ChatPage() {
+type ChatPageProps = {
+    chatid?: string | null;
+};
+
+export default function ChatPage({ chatid = null }: ChatPageProps) {
+    const [chatId, setChatId] = useState<null | string>(chatid)
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
     const [isStreaming, setIsStreaming] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
     const examplePrompts = [
         "What does the mapping script do for discharge_status?",
         "Are there null checks for payer_id?",
@@ -16,11 +24,39 @@ export default function ChatPage() {
         "Which source layouts map to the standard format version 3.2?",
     ]
 
+    useEffect(() => {
+        const getChatHistory = () => {
+            setIsFetching(true)
+            fetch(`http://localhost:8000/chats/${chatid}`)
+                .then(res => res.json())
+                .then(data => {
+                    const history = data.map((d: { role: string, message: string }) => ({
+                        role: d.role,
+                        content: d.message,
+                    }));
+                    setMessages(history);
+                    setInput('');
+                })
+                .finally(() => setIsFetching(false))
+        };
+
+        if (chatid != null) {
+            getChatHistory();
+        }
+    }, [chatid]);
+
+
     const sendMessage = async (e: FormEvent | null, overrideInput?: string) => {
         e?.preventDefault();
         const messageToSend = overrideInput ?? input;
         if (!messageToSend.trim()) return;
-
+        let uuid = "";
+        if (!chatId) {
+            uuid = uuidv4();
+            setChatId(uuid);
+        } else {
+            uuid = chatId
+        }
         const newHistory = [...messages, { role: 'user', content: messageToSend }];
         setMessages(newHistory);
         setInput('');
@@ -33,7 +69,8 @@ export default function ChatPage() {
             },
             body: JSON.stringify({
                 question: messageToSend,
-                history: newHistory
+                history: newHistory,
+                uuid
             })
         });
 
@@ -59,7 +96,13 @@ export default function ChatPage() {
 
 
     return (
-        <div className="">
+        <div className="relative">
+            {isFetching && 
+                <div className='absolute top-0 left-0 w-full h-full bg-white'>
+                    <ChatSkeleton />
+                    <ChatSkeleton />
+                </div>
+            }
             {messages.length < 1 && (
                 <div className="text-center text-gray-700">
                     <h1 className="text-xl font-semibold mb-2">💬 What can I help with?</h1>

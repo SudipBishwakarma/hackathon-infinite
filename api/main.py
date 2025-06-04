@@ -1,5 +1,5 @@
 from typing import List, AsyncGenerator
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Path
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, HTMLResponse
 from pydantic import BaseModel
@@ -358,4 +358,18 @@ async def get_chat(db: Session = Depends(get_db)):
         .all()
     )
 
+    return chats
+
+
+@app.get("/chats/{uuid}", response_model=List[ChatOut])
+async def get_chats_by_uuid(
+    uuid: str = Path(..., description="The UUID to filter chats by"),
+    db: Session = Depends(get_db)
+):
+    chats = (
+        db.query(Chat)
+        .filter(Chat.uuid == uuid)
+        .order_by(Chat.createdDt.asc())
+        .all()
+    )
     return chats
