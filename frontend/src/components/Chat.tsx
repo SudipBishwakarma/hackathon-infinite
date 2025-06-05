@@ -57,7 +57,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
         } else {
             uuid = chatId
         }
-        const newHistory = [...messages, { role: 'user', content: messageToSend }];
+        const newHistory = [...messages, { role: 'human', content: messageToSend }];
         setMessages(newHistory);
         setInput('');
         setIsStreaming(true);
@@ -69,8 +69,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
             },
             body: JSON.stringify({
                 question: messageToSend,
-                history: newHistory,
-                uuid
+                thread_id: uuid
             })
         });
 
@@ -125,7 +124,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
             <div className="space-y-4 pb-[150px]">
                 {messages.map((msg, i) => (
                     <div key={i}>
-                        {msg.role === "user" ?
+                        {msg.role === "human" ?
                             <div className="rounded-3xl px-5 py-2.5 w-fit bg-[#e9e9e980] text-black ms-auto">
                                 {msg.content}
                             </div>

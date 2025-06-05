@@ -1,5 +1,5 @@
 from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
-from utils.config import Config
+from .config import Config
 
 config = Config()
 

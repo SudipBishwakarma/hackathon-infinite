@@ -45,7 +45,6 @@ Base.metadata.create_all(bind=engine)
 
 class ChatRequest(BaseModel):
     question: str
-    history: list[dict]
     thread_id: str
 
 

@@ -8,10 +8,10 @@ from fastapi.responses import StreamingResponse, HTMLResponse
 from sqlalchemy import func, and_
 from sqlalchemy.orm import Session
 
-from utils.config import Config
-from utils.logger import Logger
-from utils.db_utils import RoleEnum, ChatOut, Chat, ChatRequest, get_db
-from chatbot import start_chat
+from .utils.config import Config
+from .utils.logger import Logger
+from .utils.db_utils import RoleEnum, ChatOut, Chat, ChatRequest, get_db
+from .chatbot import start_chat
 
 config = Config()
 logger = Logger.get_logger(name=config.app_name, level=config.log_level)
@@ -39,8 +39,21 @@ async def chat_stream(request: ChatRequest, db: Session = Depends(get_db)):
     db.add(message)
     db.commit()
     logger.info(f"API called: {request.question} | Thread ID: {request.thread_id}")
+    chat_history = (
+        db.query(Chat)
+        .filter(Chat.thread_id == request.thread_id)
+        .order_by(Chat.createdDt.asc())
+        .all()
+    )
+    chat_history_list = [
+        {
+            "role": chat.role,
+            "message": chat.message,
+        }
+        for chat in chat_history
+    ]
     def stream_response() -> AsyncGenerator[str, None]:
-        response, ai_message = start_chat(request.question, request.history)
+        response, ai_message = start_chat(request.question, chat_history_list)
         if ai_message:
             ai_message = Chat(
                 thread_id=request.thread_id, message=ai_message,
@@ -95,11 +108,24 @@ async def get_chats_by_uuid(
 
 
 @app.post("/test")
-async def stream(request: ChatRequest):
+async def stream(request: ChatRequest, db: Session = Depends(get_db)):
     logger.info(f"API called: {request.question} | Thread ID: {request.thread_id}")
+    chat_history = (
+        db.query(Chat)
+        .filter(Chat.thread_id == request.thread_id)
+        .order_by(Chat.createdDt.asc())
+        .all()
+    )
+    chat_history_list = [
+        {
+            "role": chat.role,
+            "message": chat.message,
+        }
+        for chat in chat_history
+    ]
     def stream_response() -> AsyncGenerator[str, None]:
         logger.info(f"API called: {request.question} | Thread ID: {request.thread_id}")
-        response, ai_message = start_chat(request.question, request.history)
+        response, ai_message = start_chat(request.question, chat_history_list)
         yield response
 
     return StreamingResponse(stream_response(), media_type="text/plain")

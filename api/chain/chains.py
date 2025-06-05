@@ -1,6 +1,6 @@
 from langchain_core.output_parsers import JsonOutputParser
-from prompt.templates import template
-from utils.model import llm
+from ..prompt.templates import template
+from ..utils.model import llm
 
 
 # LLM Chains
