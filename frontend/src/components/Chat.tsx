@@ -125,7 +125,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
                 {messages.map((msg, i) => (
                     <div key={i}>
                         {msg.role === "human" ?
-                            <div className="rounded-3xl px-5 py-2.5 w-fit bg-[#e9e9e980] text-black ms-auto ml-8 whitespace-pre-wrap font-mono text-sm">
+                            <div className="rounded-3xl px-5 py-2.5 w-fit bg-[#e9e9e980] text-black ms-auto whitespace-pre-wrap font-mono text-sm">
                                 {msg.content}
                             </div>
                             :
@@ -159,7 +159,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
                         placeholder='Ask anything'                        
                     />
                     <div className="flex justify-between items-center">
-                        <div className='flex-1 text-center text-sm text-gray-400'>
+                        <div className='flex-1 text-center text-sm text-gray-500'>
                             Made with <span className="text-red-500">❤</span> @ Infinite Hackathon - 2025, Nepal
                         </div>
                         <button
