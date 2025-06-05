@@ -48,8 +48,8 @@ const Navbar = () => {
                                     key={history.thread_id}
                                     className={`mb-1 block text-sm rounded-md text-gray-700 p-2 hover:bg-gray-200 ${params?.chatid == history.thread_id && "bg-gray-200"}`}
                                 >
-                                    {history.message.length > 10 
-                                        ? `${history.message.substring(0, 30)}...` 
+                                    {history.message.length > 26 
+                                        ? `${history.message.substring(0, 26)}...` 
                                         : history.message
                                     }
                                 </Link>
