@@ -17,7 +17,7 @@ client = AzureOpenAI(
 )
 
 response = client.chat.completions.create(
-    model=os.getenv("DEPLOYMENT_NAME"),
+    model=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
     messages=[
         ChatCompletionSystemMessageParam(role="system", content="You are a helpful assistant."),
         ChatCompletionUserMessageParam(role="user", content="Does Azure OpenAI support customer managed keys?"),

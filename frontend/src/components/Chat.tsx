@@ -1,6 +1,7 @@
 'use client';
 import { useState, FormEvent, useEffect } from 'react';
 import MarkdownPreview from '@uiw/react-markdown-preview';
+import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuidv4 } from 'uuid';
 import ChatSkeleton from './ChatSkeleton';
 
@@ -21,7 +22,6 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
         "Which column mappings are missing?",
         "Does the script handle nulls for required fields?",
         "Are any hardcoded values used?",
-        "Which source layouts map to the standard format version 3.2?",
     ]
 
     useEffect(() => {
@@ -57,7 +57,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
         } else {
             uuid = chatId
         }
-        const newHistory = [...messages, { role: 'user', content: messageToSend }];
+        const newHistory = [...messages, { role: 'human', content: messageToSend }];
         setMessages(newHistory);
         setInput('');
         setIsStreaming(true);
@@ -69,8 +69,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
             },
             body: JSON.stringify({
                 question: messageToSend,
-                history: newHistory,
-                uuid
+                thread_id: uuid
             })
         });
 
@@ -104,7 +103,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
                 </div>
             }
             {messages.length < 1 && (
-                <div className="text-center text-gray-700">
+                <div className="text-center text-gray-700 mt-6">
                     <h1 className="text-xl font-semibold mb-2">💬 What can I help with?</h1>
                     <p className="mb-4 text-sm text-gray-500">Not sure what to ask? Try one of these:</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto">
@@ -125,8 +124,8 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
             <div className="space-y-4 pb-[150px]">
                 {messages.map((msg, i) => (
                     <div key={i}>
-                        {msg.role === "user" ?
-                            <div className="rounded-3xl px-5 py-2.5 w-fit bg-[#e9e9e980] text-black ms-auto">
+                        {msg.role === "human" ?
+                            <div className="rounded-3xl px-5 py-2.5 w-fit bg-[#e9e9e980] text-black ms-auto whitespace-pre-wrap font-mono text-sm">
                                 {msg.content}
                             </div>
                             :
@@ -144,21 +143,33 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
                 rounded-4xl border-1 border-gray-200 shadow bg-white
                 '
             >
-                <form onSubmit={sendMessage} className='flex items-center'>
-                    <textarea
+                <form onSubmit={sendMessage} className='flex flex-col'>
+                    <TextareaAutosize
+                        maxRows={8}
                         className="p-2 w-full resize-none rounded focus:outline-none focus:ring-0 focus:border-gray-400"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                sendMessage(e);
+                            }
+                        }}
                         disabled={isStreaming}
-                        placeholder='Ask anything'
+                        placeholder='Ask anything'                        
                     />
-                    <button
-                        className="bg-black text-white rounded-full w-8 h-8 font-bold cursor-pointer"
-                        type='submit'
-                        disabled={isStreaming}
-                    >
-                        ↑
-                    </button>
+                    <div className="flex justify-between items-center">
+                        <div className='flex-1 text-center text-sm text-gray-500'>
+                            Made with <span className="text-red-500">❤</span> @ Infinite Hackathon - 2025, Nepal
+                        </div>
+                        <button
+                            className="bg-black text-white rounded-full w-8 h-8 font-bold cursor-pointer"
+                            type='submit'
+                            disabled={isStreaming}
+                        >
+                            ↑
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

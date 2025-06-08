@@ -102,4 +102,46 @@ User Q&A Examples:
 
 “Does the mapping script handle NULLs for all required fields?”
 
+# 🚀 Full Stack App — FastAPI + Next.js
 
+This project is a full-stack application built with:
+
+- 🌐 **FastAPI** for the backend (under `api/`)
+- 🖥️ **Next.js** for the frontend (under `frontend/`)
+
+---
+
+## 📦 Prerequisites
+
+- Python 3.9+
+- Node.js 18+ and npm (or `pnpm` / `yarn`)
+- (Optional) `virtualenv` for Python environment isolation
+
+---
+
+## ⚙️ Backend (FastAPI)
+
+### 📍 Location: `api/`
+
+### ▶️ To run locally:
+
+```bash
+cd api
+python -m venv venv
+source venv/bin/activate
+
+pip install -r requirements.txt
+fastapi dev main.py
+```
+
+## 💻 Frontend (FastAPI)
+
+### 📍 Location: `frontend/`
+
+### ▶️ To run locally:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```

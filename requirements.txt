@@ -1,10 +1,11 @@
 langchain
-langchain-cohere
-langchain-community
-cohere
 sqlparse
+langchain-community
 openai
 python-dotenv
+jupyterlab
+langchain[openai]
 PyMuPDF
 SQLAlchemy
-langchain[openai]
+fastapi[standard]
+uvicorn

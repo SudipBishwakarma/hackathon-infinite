@@ -38,17 +38,20 @@ const Navbar = () => {
                     <button onClick={() => setIsOpen(false)} className="cursor-pointer text-2xl">&times;</button>
                 </div>
                 <div className="mt-5">
-                    <Link href="/" className="rounded-md border-2 border-gray-300 cursor-pointer p-2 block text-center">+ New Chat</Link>
+                    <Link href="/" className="rounded-md border-2 border-gray-300 cursor-pointer p-2 block text-center">💬 New Chat</Link>
                     <div className="mt-7">
                         <p className="text-gray-500">Conversations</p>
                         <div className="mt-2">
-                            {chatHistory.map((history: {uuid: string, message: string}) => 
+                            {chatHistory.map((history: {thread_id: string, message: string}) => 
                                 <Link 
-                                    href={`/c/${history.uuid}`} 
-                                    key={history.uuid}
-                                    className={`mb-1 block text-sm rounded-md text-gray-700 p-2 hover:bg-gray-200 ${params?.chatid == history.uuid && "bg-gray-200"}`}
+                                    href={`/c/${history.thread_id}`} 
+                                    key={history.thread_id}
+                                    className={`mb-1 block text-sm rounded-md text-gray-700 p-2 hover:bg-gray-200 ${params?.chatid == history.thread_id && "bg-gray-200"}`}
                                 >
-                                    {history.message}
+                                    {history.message.length > 26 
+                                        ? `${history.message.substring(0, 26)}...` 
+                                        : history.message
+                                    }
                                 </Link>
                             )}
                         </div>
