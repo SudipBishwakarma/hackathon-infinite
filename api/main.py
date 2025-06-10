@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import List, AsyncGenerator
 
-from fastapi import Depends, FastAPI, Path
+from fastapi import Depends, FastAPI, Path, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, HTMLResponse
 
@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from .utils.config import Config
 from .utils.logger import Logger
 from .utils.db_utils import RoleEnum, ChatOut, Chat, ChatRequest, get_db
-from .chatbot import start_chat
+from .chatbot import start_chat, start_chat_stream
 
 config = Config()
 logger = Logger.get_logger(name=config.app_name, level=config.log_level)
@@ -129,3 +129,59 @@ async def stream(request: ChatRequest, db: Session = Depends(get_db)):
         yield response
 
     return StreamingResponse(stream_response(), media_type="text/plain")
+
+
+@app.websocket("/ws/chat/{thread_id}")
+async def websocket_chat(
+    websocket: WebSocket, 
+    thread_id: str = Path(...), 
+    db: Session = Depends(get_db)
+):
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_json()
+            question = data.get("question")
+            thread_id = data.get("thread_id")
+
+            if not question or not thread_id:
+                await websocket.send_text("Invalid request.")
+                continue
+
+            # Save user message
+            user_msg = Chat(
+                thread_id=thread_id,
+                message=question,
+                role=RoleEnum.user,
+                createdDt=datetime.now(timezone.utc),
+            )
+            db.add(user_msg)
+            db.commit()
+
+            # Fetch history
+            chat_history = (
+                db.query(Chat)
+                .filter(Chat.thread_id == thread_id)
+                .order_by(Chat.createdDt.asc())
+                .all()
+            )
+            chat_history_list = [{"role": chat.role, "message": chat.message} for chat in chat_history]
+
+            # Stream assistant response
+            full_response = ""
+            async for chunk in start_chat_stream(question, chat_history_list):
+                full_response += chunk
+                await websocket.send_text(chunk)
+
+            # Save assistant message
+            if full_response.strip():
+                db.add(Chat(
+                    thread_id=thread_id,
+                    message=full_response,
+                    role=RoleEnum.assistant,
+                    createdDt=datetime.now(timezone.utc),
+                ))
+                db.commit()
+
+    except WebSocketDisconnect:
+        logger.info("WebSocket disconnected.")

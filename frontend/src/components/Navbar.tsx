@@ -17,7 +17,7 @@ const Navbar = () => {
                 .then(data => setChatHistory(data))
         }
         getChatHistory()
-    }, [])
+    }, [params])
     return (
         <div className="w-full mx-auto p-3 md:w-[80%] xl:w-[60%] 2xl:w-[960px]">
             <div className="flex content-between items-center gap-3">

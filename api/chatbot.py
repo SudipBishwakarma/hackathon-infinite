@@ -1,3 +1,5 @@
+import asyncio
+from typing import AsyncGenerator, List, Dict
 from langchain_core.exceptions import OutputParserException
 from langchain_core.messages import AIMessage, HumanMessage
 from .prompt.templates import template
@@ -240,3 +242,85 @@ def start_chat(question: str, history: list[dict]) -> tuple:
     except OutputParserException as e:
         logger.error(f"Output parsing failed: {e}") 
         return "Please provide the PL/SQL script that needs to be reviewed and fixed.", None
+
+
+async def start_chat_stream(question: str, history: List[Dict]) -> AsyncGenerator[str, None]:
+    chat_history = format_history(history)
+
+    try:
+        # Guardrail
+        try:            
+            ai_message_guardrail: dict = guardrail_chain.invoke({"history": chat_history, "question": question})
+            # guardrail_prompt = template["guardrail"].invoke({"history": chat_history, "question": question}).to_string()
+            # logger.debug(f"***Guardrail Prompt:\n{guardrail_prompt}")
+            # logger.debug(f"***Guardrail AI Message:\n{ai_message_guardrail}")
+            if not ai_message_guardrail.get("valid_input"):
+                logger.warning("Invalid input detected by guardrail chain.")
+                yield ai_message_guardrail.get("markdown", "Input rejected by guardrails.")
+                return
+        except Exception as e:
+            logger.error(f"Guardrail chain failed: {e}")
+            yield "Please ask me questions related to PL/SQL."
+            return
+
+        # Feature Extractor
+        try:
+            ai_message_feature_extractor: dict = feature_extractor_chain.invoke({"history": chat_history, "question": question})
+            # feature_extractor_prompt = template["feature_extractor"].invoke({"history": chat_history, "question": question}).to_string()
+            # logger.debug(f"***Feature Extractor Prompt:\n{feature_extractor_prompt}")
+            # logger.debug(f"***Feature Extractor AI Message:\n{ai_message_feature_extractor}")
+            feature_markdown = ai_message_feature_extractor.get("markdown", "")
+            for word in feature_markdown:
+                yield word
+                await asyncio.sleep(0.005)
+        except Exception as e:
+            logger.error(f"Feature extractor chain failed: {e}")
+            ai_message_feature_extractor = {}
+
+        # Context
+        context = ""
+        if ai_message_feature_extractor:
+            context = template["context"].invoke({
+                "src_dm": src_dm, "src_dd": src_dd,
+                "tar_dm": tar_dm, "tar_dd": tar_dd
+            })
+            logger.debug(f"***Context:\n{context.to_string()}")
+
+        # Auditor
+        ai_message_auditor = auditor_chain.invoke({
+            "history": chat_history,
+            "context": context,
+            "question": question
+        })
+        # auditor_prompt = template["auditor"].invoke({"history": chat_history, "context": context, "question": question}).to_string()
+        # logger.debug(f"***Auditor Prompt:\n{auditor_prompt}")
+        # logger.debug(f"***Auditor AI Message:\n{ai_message_auditor}")
+
+        auditor_markdown = ai_message_auditor.get("markdown", "")
+        for word in auditor_markdown:
+            yield word
+            await asyncio.sleep(0.005)
+
+        if not ai_message_auditor.get("issues_found"):
+            return
+
+        # Fixer
+        ai_message_fixer = fixer_chain.invoke({
+            "history": chat_history,
+            "audit": ai_message_auditor,
+            "context": context,
+            "question": question
+        })
+        # fixer_prompt = template["fixer"].invoke({"history": chat_history, "audit": ai_message_auditor, "context": context, "question": question}).to_string()
+        # logger.debug(f"***Fixer Prompt:\n{fixer_prompt}")
+        # logger.debug(f"***Fixer AI Message:\n{ai_message_fixer}")
+        # chat_history.extend([HumanMessage(content=question), AIMessage(content=ai_message_fixer.get("markdown", ""))])
+
+        fixer_markdown = ai_message_fixer.get("markdown", "")
+        for word in fixer_markdown:
+            yield word
+            await asyncio.sleep(0.005)
+
+    except Exception as e:
+        logger.error(f"Streaming chat failed: {e}")
+        yield "An error occurred while processing your request."

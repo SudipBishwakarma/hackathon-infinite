@@ -10,8 +10,8 @@ type ChatPageProps = {
 };
 
 export default function ChatPage({ chatid = null }: ChatPageProps) {
-    const chatId = chatid || uuidv4();
-    const socket = useRef<WebSocket | null>(null);
+    const socket = useRef<WebSocket | null>(null)
+    const [chatId, setChatId] = useState<null | string>(chatid)
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
     const [isStreaming, setIsStreaming] = useState(false);
@@ -43,26 +43,18 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
 
         if (chatid != null) {
             getChatHistory();
+            socket.current = new WebSocket(`ws://localhost:8000/chat/${chatid}`)
+
+            socket.current.onmessage = (e) => {
+                const chunk = e.data;
+                setMessages(prev => [...prev, { role: 'assistant', content: chunk }]);
+                setIsStreaming(false)
+            }
+
+            socket.current.onclose = () => {
+                setIsStreaming(false)
+            }
         }
-
-        socket.current = new WebSocket(`ws://localhost:8000/ws/chat/${chatId}`);
-
-        socket.current.onmessage = (e) => {
-            const chunk = e.data;
-            setMessages(prev => {
-                const last = prev[prev.length - 1];
-                if (last?.role === 'assistant') {
-                    return [...prev.slice(0, -1), { role: 'assistant', content: last.content + chunk }];
-                } else {
-                    return [...prev, { role: 'assistant', content: chunk }];
-                }
-            });
-            setIsStreaming(false);
-        };
-
-        socket.current.onclose = () => {
-            setIsStreaming(false);
-        };
 
         return () => socket.current?.close();
     }, [chatid]);
@@ -72,16 +64,43 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
         e?.preventDefault();
         const messageToSend = overrideInput ?? input;
         if (!messageToSend.trim()) return;
-
         const newHistory = [...messages, { role: 'human', content: messageToSend }];
+        let uuid = "";
+
         setMessages(newHistory);
         setInput('');
         setIsStreaming(true);
-        if (socket.current?.readyState === WebSocket.OPEN) {
-            socket.current.send(JSON.stringify({
-                question: messageToSend,
-                thread_id: chatId
-            }));
+
+        if (!chatId) {
+            // uuid = uuidv4();
+            // setChatId(uuid);
+            const res = await fetch('http://localhost:8000/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    question: messageToSend,
+                    thread_id: uuid
+                })
+            });
+            const reader = res.body?.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let aiResponse = '';
+            while (reader) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                aiResponse += decoder.decode(value, { stream: true });
+                setMessages(prev => [...newHistory, { role: 'assistant', content: aiResponse }]);
+            }
+        } else {
+            uuid = chatId
+            if (socket.current?.readyState === WebSocket.OPEN) {
+                socket.current.send(JSON.stringify({
+                    question: messageToSend,
+                    thread_id: uuid
+                }));
+            }
         }
 
         setIsStreaming(false);
