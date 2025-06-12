@@ -1,0 +1,77 @@
+[
+  {
+    "column_name": "member_id_id",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Unique identifier code for the member."
+  },
+  {
+    "column_name": "sub_first_name_code",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "First name code of the member."
+  },
+  {
+    "column_name": "last_name_id",
+    "data_type": "varchar",
+    "column_size": 60,
+    "column_description": "Last name of the member."
+  },
+  {
+    "column_name": "date_of_birth_nm",
+    "data_type": "date",
+    "column_description": "Date of birth of the member (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "mem_gender",
+    "data_type": "char",
+    "column_size": 1,
+    "column_description": "Gender of the member."
+  },
+  {
+    "column_name": "address",
+    "data_type": "varchar",
+    "column_size": 100,
+    "column_description": "Address of the member."
+  },
+  {
+    "column_name": "city",
+    "data_type": "varchar",
+    "column_size": 30,
+    "column_description": "City of the member's address."
+  },
+  {
+    "column_name": "sub_state",
+    "data_type": "char",
+    "column_size": 2,
+    "column_description": "State code of the member's address."
+  },
+  {
+    "column_name": "zip_code",
+    "data_type": "varchar",
+    "column_size": 9,
+    "column_description": "ZIP code of the member's address."
+  },
+  {
+    "column_name": "mem_plan_id_code",
+    "data_type": "varchar",
+    "column_size": 30,
+    "column_description": "Plan identifier code for the member."
+  },
+  {
+    "column_name": "group_number",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Group number associated with the member's plan."
+  },
+  {
+    "column_name": "coverage_start_date_val",
+    "data_type": "date",
+    "column_description": "Coverage start date for the member (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "sub_coverage_end_date_val",
+    "data_type": "date",
+    "column_description": "Coverage end date for the member (YYYY-MM-DD)."
+  }
+]

@@ -1,0 +1,65 @@
+[
+  {
+    "column_name": "drg_claim_id_id",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "Unique identifier for the DRG claim."
+  },
+  {
+    "column_name": "phm_member_id_code",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Unique identifier code for the member."
+  },
+  {
+    "column_name": "service_date_nm",
+    "data_type": "date",
+    "column_description": "Date of service provided (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "rx_admission_date_nm",
+    "data_type": "date",
+    "column_description": "Date of admission for prescription (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "discharge_date_id",
+    "data_type": "date",
+    "column_description": "Date of discharge (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "phm_procedure_code_val",
+    "data_type": "varchar",
+    "column_size": 10,
+    "column_description": "Code representing the procedure performed."
+  },
+  {
+    "column_name": "mem_diagnosis_code_nm",
+    "data_type": "varchar",
+    "column_size": 10,
+    "column_description": "Code representing the member's diagnosis."
+  },
+  {
+    "column_name": "billed_amount_nm",
+    "data_type": "number",
+    "column_size": "10, 2",
+    "column_description": "Total amount billed for the claim."
+  },
+  {
+    "column_name": "paid_amount_val",
+    "data_type": "number",
+    "column_size": "10, 2",
+    "column_description": "Total amount paid for the claim."
+  },
+  {
+    "column_name": "mem_provider_id_nm",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "Unique identifier for the provider."
+  },
+  {
+    "column_name": "drg_claim_status_id",
+    "data_type": "varchar",
+    "column_size": 20,
+    "column_description": "Status of the DRG claim."
+  }
+]

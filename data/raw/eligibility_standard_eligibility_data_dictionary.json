@@ -1,0 +1,107 @@
+[
+  {
+    "column_name": "member_id",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Unique identifier for the member."
+  },
+  {
+    "column_name": "first_name",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "First name of the member."
+  },
+  {
+    "column_name": "last_name",
+    "data_type": "varchar",
+    "column_size": 60,
+    "column_description": "Last name of the member."
+  },
+  {
+    "column_name": "date_of_birth",
+    "data_type": "date",
+    "column_description": "Date of birth of the member (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "gender",
+    "data_type": "char",
+    "column_size": 1,
+    "column_description": "Gender of the member."
+  },
+  {
+    "column_name": "address",
+    "data_type": "varchar",
+    "column_size": 100,
+    "column_description": "Address of the member."
+  },
+  {
+    "column_name": "city",
+    "data_type": "varchar",
+    "column_size": 30,
+    "column_description": "City of the member's residence."
+  },
+  {
+    "column_name": "state",
+    "data_type": "char",
+    "column_size": 2,
+    "column_description": "State code of the member's residence."
+  },
+  {
+    "column_name": "zip_code",
+    "data_type": "varchar",
+    "column_size": 9,
+    "column_description": "ZIP code of the member's residence."
+  },
+  {
+    "column_name": "plan_id",
+    "data_type": "varchar",
+    "column_size": 30,
+    "column_description": "Identifier for the member's plan."
+  },
+  {
+    "column_name": "group_number",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Group number associated with the member's plan."
+  },
+  {
+    "column_name": "coverage_start_date",
+    "data_type": "date",
+    "column_description": "Start date of the member's coverage (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "coverage_end_date",
+    "data_type": "date",
+    "column_description": "End date of the member's coverage (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "coverage_level_code",
+    "data_type": "char",
+    "column_size": 3,
+    "column_description": "Code representing the level of coverage."
+  },
+  {
+    "column_name": "subscriber_indicator",
+    "data_type": "char",
+    "column_size": 1,
+    "column_description": "Indicator if the member is a subscriber."
+  },
+  {
+    "column_name": "product_category_code",
+    "data_type": "char",
+    "column_size": 2,
+    "column_description": "Code representing the product category."
+  },
+  {
+    "column_name": "plan_type",
+    "data_type": "char",
+    "column_size": 3,
+    "column_description": "Type of plan the member is enrolled in."
+  },
+  {
+    "column_name": "market_category_code",
+    "data_type": "varchar",
+    "column_size": 4,
+    "column_description": "Code representing the market category."
+  }
+]

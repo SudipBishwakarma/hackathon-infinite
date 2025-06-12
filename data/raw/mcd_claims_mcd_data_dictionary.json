@@ -1,0 +1,65 @@
+[
+  {
+    "column_name": "sub_claim_id_nm",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "Unique identifier for the sub claim."
+  },
+  {
+    "column_name": "sub_member_id_code",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Unique identifier code for the sub member."
+  },
+  {
+    "column_name": "phm_service_date_nm",
+    "data_type": "date",
+    "column_description": "Date of the service provided (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "sub_admission_date_val",
+    "data_type": "date",
+    "column_description": "Date of admission (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "phm_discharge_date_id",
+    "data_type": "date",
+    "column_description": "Date of discharge (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "procedure_code_id",
+    "data_type": "varchar",
+    "column_size": 10,
+    "column_description": "Code representing the procedure performed."
+  },
+  {
+    "column_name": "rx_diagnosis_code_code",
+    "data_type": "varchar",
+    "column_size": 10,
+    "column_description": "Code representing the diagnosis."
+  },
+  {
+    "column_name": "rx_billed_amount",
+    "data_type": "number",
+    "column_size": "10, 2",
+    "column_description": "Amount billed for the prescription."
+  },
+  {
+    "column_name": "mem_paid_amount_code",
+    "data_type": "number",
+    "column_size": "10, 2",
+    "column_description": "Amount paid by the member."
+  },
+  {
+    "column_name": "mem_provider_id",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "Unique identifier for the provider."
+  },
+  {
+    "column_name": "clm_claim_status",
+    "data_type": "varchar",
+    "column_size": 20,
+    "column_description": "Status of the claim."
+  }
+]

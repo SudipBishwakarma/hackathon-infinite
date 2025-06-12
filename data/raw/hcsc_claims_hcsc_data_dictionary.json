@@ -1,0 +1,65 @@
+[
+  {
+    "column_name": "drg_claim_id_nm",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "Unique identifier name for the DRG claim."
+  },
+  {
+    "column_name": "rx_member_id",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Unique identifier for the member associated with the prescription."
+  },
+  {
+    "column_name": "sub_service_date_val",
+    "data_type": "date",
+    "column_description": "Date of the service provided (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "rx_admission_date_val",
+    "data_type": "date",
+    "column_description": "Date of admission for the prescription (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "sub_discharge_date_code",
+    "data_type": "date",
+    "column_description": "Date of discharge from the service (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "clm_procedure_code_code",
+    "data_type": "varchar",
+    "column_size": 10,
+    "column_description": "Code representing the procedure performed."
+  },
+  {
+    "column_name": "sub_diagnosis_code",
+    "data_type": "varchar",
+    "column_size": 10,
+    "column_description": "Code representing the diagnosis."
+  },
+  {
+    "column_name": "sub_billed_amount_code",
+    "data_type": "number",
+    "column_size": "10, 2",
+    "column_description": "Amount billed for the service."
+  },
+  {
+    "column_name": "paid_amount_nm",
+    "data_type": "number",
+    "column_size": "10, 2",
+    "column_description": "Amount paid for the claim."
+  },
+  {
+    "column_name": "drg_provider_id_code",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "Unique identifier code for the provider."
+  },
+  {
+    "column_name": "rx_claim_status",
+    "data_type": "varchar",
+    "column_size": 20,
+    "column_description": "Status of the prescription claim."
+  }
+]
