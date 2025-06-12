@@ -8,10 +8,11 @@ from fastapi.responses import StreamingResponse, HTMLResponse
 from sqlalchemy import func, and_
 from sqlalchemy.orm import Session
 
-from .utils.config import Config
-from .utils.logger import Logger
-from .utils.db_utils import RoleEnum, ChatOut, Chat, ChatRequest, get_db
-from .chatbot import start_chat, start_chat_stream
+from utils.config import Config
+from utils.logger import Logger
+from utils.db_utils import RoleEnum, ChatOut, Chat, ChatRequest, get_db
+from chatbot import start_chat, start_chat_stream
+
 
 config = Config()
 logger = Logger.get_logger(name=config.app_name, level=config.log_level)

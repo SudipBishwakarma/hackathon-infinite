@@ -1,0 +1,22 @@
+[
+    {"name": "United Healthcare", "abbr": "UHC"},
+    {"name": "Elevance Health", "abbr": "ANTM"},
+    {"name": "Aetna", "abbr": "AET"},
+    {"name": "Cigna Healthcare", "abbr": "CI"},
+    {"name": "Humana", "abbr": "HUM"},
+    {"name": "Kaiser Permanente", "abbr": "KP"},
+    {"name": "Centene Corporation", "abbr": "CNC"},
+    {"name": "Molina Healthcare", "abbr": "MOH"},
+    {"name": "Blue Cross Blue Shield Association", "abbr": "BCBSA"},
+    {"name": "Health Care Service Corporation", "abbr": "HCSC"},
+    {"name": "Highmark Health", "abbr": "HMI"},
+    {"name": "Geisinger Health Plan", "abbr": "GHP"},
+    {"name": "UPMC Health Plan", "abbr": "UPMC"},
+    {"name": "Independence Blue Cross", "abbr": "IBC"},
+    {"name": "Harvard Pilgrim Health Care", "abbr": "HPHC"},
+    {"name": "Tufts Health Plan", "abbr": "THP"},
+    {"name": "WellCare Health Plans", "abbr": "WCG"},
+    {"name": "Tricare", "abbr": "TRI"},
+    {"name": "Medicare", "abbr": "MCR"},
+    {"name": "Medicaid", "abbr": "MCD"}
+]

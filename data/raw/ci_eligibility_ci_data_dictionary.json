@@ -1,0 +1,77 @@
+[
+  {
+    "column_name": "member_id_val",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Unique identifier for the member."
+  },
+  {
+    "column_name": "mem_first_name_val",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "First name of the member."
+  },
+  {
+    "column_name": "last_name_code",
+    "data_type": "varchar",
+    "column_size": 60,
+    "column_description": "Last name of the member."
+  },
+  {
+    "column_name": "date_of_birth",
+    "data_type": "date",
+    "column_description": "Date of birth of the member."
+  },
+  {
+    "column_name": "gender_id",
+    "data_type": "char",
+    "column_size": 1,
+    "column_description": "Gender identifier of the member."
+  },
+  {
+    "column_name": "address",
+    "data_type": "varchar",
+    "column_size": 100,
+    "column_description": "Address of the member."
+  },
+  {
+    "column_name": "city_val",
+    "data_type": "varchar",
+    "column_size": 30,
+    "column_description": "City of the member."
+  },
+  {
+    "column_name": "state_val",
+    "data_type": "char",
+    "column_size": 2,
+    "column_description": "State of the member."
+  },
+  {
+    "column_name": "mem_zip_code_code",
+    "data_type": "varchar",
+    "column_size": 9,
+    "column_description": "ZIP code of the member."
+  },
+  {
+    "column_name": "plan_id_val",
+    "data_type": "varchar",
+    "column_size": 30,
+    "column_description": "Plan identifier for the member."
+  },
+  {
+    "column_name": "mem_group_number",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Group number for the member's plan."
+  },
+  {
+    "column_name": "mem_coverage_start_date_val",
+    "data_type": "date",
+    "column_description": "Coverage start date for the member."
+  },
+  {
+    "column_name": "coverage_end_date_nm",
+    "data_type": "date",
+    "column_description": "Coverage end date for the member."
+  }
+]

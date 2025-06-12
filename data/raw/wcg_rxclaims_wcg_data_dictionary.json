@@ -1,0 +1,61 @@
+[
+  {
+    "column_name": "drg_rx_claim_id",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "Unique identifier for the drug prescription claim."
+  },
+  {
+    "column_name": "sub_member_id_val",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Unique identifier value for the subscriber member."
+  },
+  {
+    "column_name": "pharmacy_id_val",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "Unique identifier value for the pharmacy."
+  },
+  {
+    "column_name": "fill_date_id",
+    "data_type": "date",
+    "column_description": "Date when the prescription was filled (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "phm_drug_code_nm",
+    "data_type": "varchar",
+    "column_size": 15,
+    "column_description": "Name code for the pharmaceutical drug."
+  },
+  {
+    "column_name": "sub_quantity_dispensed_nm",
+    "data_type": "number",
+    "column_size": "10, 2",
+    "column_description": "Quantity of the drug dispensed."
+  },
+  {
+    "column_name": "rx_days_supply_code",
+    "data_type": "number",
+    "column_size": 3,
+    "column_description": "Code representing the number of days the prescription will last."
+  },
+  {
+    "column_name": "mem_billed_amount_nm",
+    "data_type": "number",
+    "column_size": "10, 2",
+    "column_description": "Amount billed to the member."
+  },
+  {
+    "column_name": "clm_paid_amount_val",
+    "data_type": "number",
+    "column_size": "10, 2",
+    "column_description": "Amount paid for the claim."
+  },
+  {
+    "column_name": "sub_prescriber_id_code",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "Identifier code for the prescriber."
+  }
+]

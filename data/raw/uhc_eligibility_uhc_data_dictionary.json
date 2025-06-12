@@ -1,0 +1,77 @@
+[
+  {
+    "column_name": "sub_member_id",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Unique identifier for the subscriber member."
+  },
+  {
+    "column_name": "first_name_code",
+    "data_type": "varchar",
+    "column_size": 35,
+    "column_description": "Encoded first name of the member."
+  },
+  {
+    "column_name": "mem_last_name",
+    "data_type": "varchar",
+    "column_size": 60,
+    "column_description": "Last name of the member."
+  },
+  {
+    "column_name": "sub_date_of_birth_val",
+    "data_type": "date",
+    "column_description": "Date of birth of the subscriber member (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "mem_gender_val",
+    "data_type": "char",
+    "column_size": 1,
+    "column_description": "Gender value of the member."
+  },
+  {
+    "column_name": "address_id",
+    "data_type": "varchar",
+    "column_size": 100,
+    "column_description": "Identifier for the address."
+  },
+  {
+    "column_name": "city_code",
+    "data_type": "varchar",
+    "column_size": 30,
+    "column_description": "Code representing the city."
+  },
+  {
+    "column_name": "state_nm",
+    "data_type": "char",
+    "column_size": 2,
+    "column_description": "State abbreviation."
+  },
+  {
+    "column_name": "sub_zip_code_id",
+    "data_type": "varchar",
+    "column_size": 9,
+    "column_description": "ZIP code identifier for the subscriber."
+  },
+  {
+    "column_name": "sub_plan_id_code",
+    "data_type": "varchar",
+    "column_size": 30,
+    "column_description": "Code for the subscriber's plan ID."
+  },
+  {
+    "column_name": "mem_group_number_code",
+    "data_type": "varchar",
+    "column_size": 50,
+    "column_description": "Code for the member's group number."
+  },
+  {
+    "column_name": "coverage_start_date_val",
+    "data_type": "date",
+    "column_description": "Coverage start date (YYYY-MM-DD)."
+  },
+  {
+    "column_name": "coverage_end_date_id",
+    "data_type": "date",
+    "column_description": "Coverage end date (YYYY-MM-DD)."
+  }
+]

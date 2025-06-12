@@ -126,12 +126,10 @@ This project is a full-stack application built with:
 ### ▶️ To run locally:
 
 ```bash
-cd api
-python -m venv venv
 source venv/bin/activate
-
 pip install -r requirements.txt
-fastapi dev main.py
+cd api
+uvicorn main:app
 ```
 
 ## 💻 Frontend (FastAPI)
