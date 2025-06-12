@@ -129,7 +129,7 @@ This project is a full-stack application built with:
 source venv/bin/activate
 pip install -r requirements.txt
 cd api
-fastapi dev main.py
+uvicorn main:app
 ```
 
 ## 💻 Frontend (FastAPI)
