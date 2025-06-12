@@ -9,3 +9,8 @@ PyMuPDF
 SQLAlchemy
 fastapi[standard]
 uvicorn
+uvicorn[standard]
+tiktoken
+pinecone-client
+pinecone
+langchain-pinecone

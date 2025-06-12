@@ -23,6 +23,8 @@ class Config:
             self.azure_embed_api_key = os.getenv("AZURE_OPENAI_EMBEDDING_API_KEY")
             self.azure_embed_api_version = os.getenv("AZURE_OPENAI_EMBEDDING_API_VERSION")
             self.azure_embed_deployment_name = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME")
+            self.pinecone_api_key = os.getenv("PINECONE_API_KEY")
+            self.pinecone_index_name = os.getenv("PINECONE_INDEX_NAME")
             self.database_url = os.getenv("DATABASE_URL")
             self.table_name = os.getenv("TABLE_NAME")
             self.app_name = os.getenv("APP_NAME")

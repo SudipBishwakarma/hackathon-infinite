@@ -8,6 +8,8 @@ from sqlalchemy import Enum
 from pydantic import BaseModel
 
 from .config import Config
+
+
 config = Config()
 
 engine = create_engine(config.database_url, connect_args={"check_same_thread": False})

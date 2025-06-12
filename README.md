@@ -126,11 +126,9 @@ This project is a full-stack application built with:
 ### ▶️ To run locally:
 
 ```bash
-cd api
-python -m venv venv
 source venv/bin/activate
-
 pip install -r requirements.txt
+cd api
 fastapi dev main.py
 ```
 

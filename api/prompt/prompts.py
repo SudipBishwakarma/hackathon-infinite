@@ -56,20 +56,61 @@ You must:
    - Return **unique** table names in a list.
 
 3. **Extract Column Names**:
-   - From the user's PL/SQL script, conversation references, or partial descriptions, collect all unique column names.
+   - From the user's PL/SQL script, conversation references, or partial descriptions, collect all unique column names of each tables.
    - Avoid including SQL keywords or expressions.
 
 4. **Detect Client Identifier (if present)**:
-   - Identify a `client_name` if a naming convention or message indicates a source client (e.g., table names like `eligibility_payer_1`, `payer_abc`, or user prompts that mention "client xyz").
+   - Identify a `client_name` if a naming convention or message indicates a source client (e.g., user prompts that mention "client xyz").
+   - If there's no indication in the message then infer the client abbreviation from the table name (e.g., table names like `eligibility_payer_1`, `payer_abc`) and use this abbreviation to infer client_name from list of payers specified below:
+       [
+            {{'name': 'United Healthcare', 'abbr': 'UHC'}},
+            {{'name': 'Elevance Health', 'abbr': 'ANTM'}},
+            {{'name': 'Aetna', 'abbr': 'AET'}},
+            {{'name': 'Cigna Healthcare', 'abbr': 'CI'}},
+            {{'name': 'Humana', 'abbr': 'HUM'}},
+            {{'name': 'Kaiser Permanente', 'abbr': 'KP'}},
+            {{'name': 'Centene Corporation', 'abbr': 'CNC'}},
+            {{'name': 'Molina Healthcare', 'abbr': 'MOH'}},
+            {{'name': 'Blue Cross Blue Shield Association', 'abbr': 'BCBSA'}},
+            {{'name': 'Health Care Service Corporation', 'abbr': 'HCSC'}},
+            {{'name': 'Highmark Health', 'abbr': 'HMI'}},
+            {{'name': 'Geisinger Health Plan', 'abbr': 'GHP'}},
+            {{'name': 'UPMC Health Plan', 'abbr': 'UPMC'}},
+            {{'name': 'Independence Blue Cross', 'abbr': 'IBC'}},
+            {{'name': 'Harvard Pilgrim Health Care', 'abbr': 'HPHC'}},
+            {{'name': 'Tufts Health Plan', 'abbr': 'THP'}},
+            {{'name': 'WellCare Health Plans', 'abbr': 'WCG'}},
+            {{'name': 'Tricare', 'abbr': 'TRI'}},
+            {{'name': 'Medicare', 'abbr': 'MCR'}},
+            {{'name': 'Medicaid', 'abbr': 'MCD'}}
+        ]
 
 5. **Output Format**:
    Respond strictly in this JSON format with following key and value pairs:
-     "tables": ["table_name_1", "table_name_2"],
-     "columns": ["column_1", "column_2", ...],
-     "client_name": "client_identifier" // or null if not found
-     "markdown": "The plain text response formatted as Markdown"
+    {{
+        "tables": [
+            {{
+                 "table_name": "table_name_1",
+                 "columns": ["column_1", "column_2", ...],
+                 "client_name": "client_identifier" // or null if not found
+            }},
+            {{
+                 "table_name": "table_name_2",
+                 "columns": ["column_1", "column_2", ...],
+                 "client_name": "client_identifier" // or null if not found
+            }},
+            {{
+                 "table_name": "table_name_3",
+                 "columns": ["column_1", "column_2", ...],
+                 "client_name": "client_identifier" // or null if not found
+            }}
+        ],
+        "markdown": "The plain text response formatted as Markdown"
+    }}
 
-6. If you couldn't infer then just output with empty json object.
+6. If the table name starts with "standard_", set the client name of that table to "Default".
+
+7. If you couldn't infer then just output with empty json object.
 
 """
 
@@ -118,23 +159,5 @@ Respond strictly in this JSON format with following key and value pairs:
 
 # Chatbot Context Prompt
 context_prompt = """
-Source layout: ```
-{src_dm}
-
-```
-
-Source layout data dictionary: ```
-{src_dd}
-
-```
-
-Target standard layout: ```
-{tar_dm}
-
-```
-
-Target standard layout data dictionary: ```
-{tar_dd}
-
-```
+{knowledgebase}
 """
