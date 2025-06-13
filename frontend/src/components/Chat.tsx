@@ -105,7 +105,10 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
             }
             {messages.length < 1 && (
                 <div className="text-center text-gray-700 mt-6">
-                    <h1 className="text-xl font-semibold mb-2">💬 What can I help with?</h1>
+                    <h1 className="text-xl font-semibold mb-2">
+                        <span className="inline-block animate-bounce me-1">💬</span>
+                        What can I help with?
+                    </h1>
                     <p className="mb-4 text-sm text-gray-500">Not sure what to ask? Try one of these:</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto">
                         {examplePrompts.map((prompt, index) => (

@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import List, AsyncGenerator
 
-from fastapi import Depends, FastAPI, Path, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, HTTPException, Path, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, HTMLResponse
 
@@ -106,6 +106,20 @@ async def get_chats_by_uuid(
         .all()
     )
     return chats
+
+
+@app.delete("/chat/{thread_id}")
+async def delete_chat(
+    thread_id: str = Path(..., description="The thread ID to delete"),
+    db: Session = Depends(get_db)
+):
+    deleted_count = db.query(Chat).filter(Chat.thread_id == thread_id).delete(synchronize_session=False)
+
+    if deleted_count == 0:
+        raise HTTPException(status_code=404, detail="No chats found with this thread_id")
+
+    db.commit()
+    return {"message": "Chat deleted successfully"}
 
 
 @app.post("/test")
