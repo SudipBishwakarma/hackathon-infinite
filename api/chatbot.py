@@ -91,6 +91,7 @@ async def start_chat_stream(question: str, history: List[Dict]) -> AsyncGenerato
             guardrail_prompt = template["guardrail"].invoke({"history": chat_history, "question": question}).to_string()
             logger.debug(f"***Guardrail Prompt:\n{guardrail_prompt}")
             logger.debug(f"***Guardrail AI Message:\n{ai_message_guardrail}")
+            yield "\n"
             if not ai_message_guardrail.get("valid_input"):
                 logger.warning("Invalid input detected by guardrail chain.")
                 yield ai_message_guardrail.get("markdown", "Input rejected by guardrails.")
@@ -107,6 +108,7 @@ async def start_chat_stream(question: str, history: List[Dict]) -> AsyncGenerato
             logger.debug(f"***Feature Extractor Prompt:\n{feature_extractor_prompt}")
             logger.debug(f"***Feature Extractor AI Message:\n{ai_message_feature_extractor}")
             feature_markdown = ai_message_feature_extractor.get("markdown", "")
+            yield "\n"
             for word in feature_markdown:
                 yield word
                 await asyncio.sleep(0.005)
@@ -133,6 +135,7 @@ async def start_chat_stream(question: str, history: List[Dict]) -> AsyncGenerato
         logger.debug(f"***Auditor AI Message:\n{ai_message_auditor}")
 
         auditor_markdown = ai_message_auditor.get("markdown", "")
+        yield "\n"
         for word in auditor_markdown:
             yield word
             await asyncio.sleep(0.005)
@@ -153,6 +156,7 @@ async def start_chat_stream(question: str, history: List[Dict]) -> AsyncGenerato
         chat_history.extend([HumanMessage(content=question), AIMessage(content=ai_message_fixer.get("markdown", ""))])
 
         fixer_markdown = ai_message_fixer.get("markdown", "")
+        yield "\n"
         for word in fixer_markdown:
             yield word
             await asyncio.sleep(0.005)

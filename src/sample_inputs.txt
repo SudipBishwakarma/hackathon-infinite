@@ -1,0 +1,135 @@
+Single: With client name specified
+Please validate this script for client United Healthcare:
+
+BEGIN
+INSERT INTO standard_eligibility (
+    member_id, first_name, last_name, date_of_birth, gender, address, city, state, zip_code, plan_id, group_number, coverage_start_date, coverage_end_date, coverage_level_code, subscriber_indicator, product_category_code, plan_type, market_category_code
+)
+SELECT
+    mem_member_id AS member_id,
+    first_name_id AS first_name,
+    mem_last_name AS last_name,
+    date_of_birth AS date_of_birth,
+    phm_gender_val AS gender,
+    clm_address AS address,
+    city AS city,
+    rx_state_val AS state,
+    phm_zip_code_val AS zip_code,
+    mem_plan_id AS plan_id,
+    clm_group_number AS group_number,
+    clm_coverage_start_date AS coverage_start_date,
+    phm_coverage_end_date AS coverage_end_date,
+    mem_coverage_level_code AS coverage_level_code,
+    clm_subscriber_indicator AS subscriber_indicator,
+    rx_product_category_code_val AS product_category_code,
+    rx_plan_type AS plan_type,
+    rx_market_category_code_val AS market_category_code
+FROM eligibility_uhc;
+END;
+/
+
+________________________________________________________________________________
+Single: without client name specified
+Please validate this script provided below.
+BEGIN
+INSERT INTO standard_eligibility (
+    member_id, first_name, last_name, date_of_birth, gender, address, city, state, zip_code, plan_id, group_number, coverage_start_date, coverage_end_date, coverage_level_code, subscriber_indicator, product_category_code, plan_type, market_category_code
+)
+SELECT
+    member_id_val AS member_id,
+    clm_first_name AS first_name,
+    clm_last_name AS last_name,
+    phm_date_of_birth_val AS date_of_birth,
+    phm_gender_id AS gender,
+    phm_address_val AS address,
+    clm_city_id AS city,
+    mem_state_id AS state,
+    zip_code_id AS zip_code,
+    rx_plan_id_id AS plan_id,
+    phm_group_number_val AS group_number,
+    phm_coverage_start_date AS coverage_start_date,
+    mem_coverage_end_date_id AS coverage_end_date,
+    coverage_level_code AS coverage_level_code,
+    clm_subscriber_indicator_id AS subscriber_indicator,
+    rx_product_category_code AS product_category_code,
+    clm_plan_type AS plan_type,
+    clm_market_category_code_val AS market_category_code
+FROM eligibility_aet;
+END;
+/
+
+
+
+Multiple script:
+_________________________________________________
+
+Please validate these scripts provided below:
+
+BEGIN
+INSERT INTO standard_eligibility (
+    member_id, first_name, last_name, date_of_birth, gender, address, city, state, zip_code, plan_id, group_number, coverage_start_date, coverage_end_date, coverage_level_code, subscriber_indicator, product_category_code, plan_type, market_category_code
+)
+SELECT
+    member_id_val AS member_id,
+    clm_first_name AS first_name,
+    clm_last_name AS last_name,
+    phm_date_of_birth_val AS date_of_birth,
+    phm_gender_id AS gender,
+    phm_address_val AS address,
+    clm_city_id AS city,
+    mem_state_id AS state,
+    zip_code_id AS zip_code,
+    rx_plan_id_id AS plan_id,
+    phm_group_number_val AS group_number,
+    phm_coverage_start_date AS coverage_start_date,
+    mem_coverage_end_date_id AS coverage_end_date,
+    coverage_level_code AS coverage_level_code,
+    clm_subscriber_indicator_id AS subscriber_indicator,
+    rx_product_category_code AS product_category_code,
+    clm_plan_type AS plan_type,
+    clm_market_category_code_val AS market_category_code
+FROM eligibility_aet;
+END;
+/
+
+BEGIN
+INSERT INTO standard_eligibility (
+    member_id, first_name, last_name, date_of_birth, gender, address, city, state, zip_code, plan_id, group_number, coverage_start_date, coverage_end_date, coverage_level_code, subscriber_indicator, product_category_code, plan_type, market_category_code
+)
+SELECT
+    clm_member_id_val AS member_id,
+    phm_first_name_val AS first_name,
+    rx_last_name_id AS last_name,
+    date_of_birth AS date_of_birth,
+    clm_gender AS gender,
+    mem_address_val AS address,
+    mem_city_val AS city,
+    clm_state AS state,
+    mem_zip_code AS zip_code,
+    mem_plan_id AS plan_id,
+    phm_group_number_id AS group_number,
+    clm_coverage_start_date AS coverage_start_date,
+    phm_coverage_end_date AS coverage_end_date,
+    rx_coverage_level_code AS coverage_level_code,
+    rx_subscriber_indicator_val AS subscriber_indicator,
+    clm_product_category_code_id AS product_category_code,
+    clm_plan_type_id AS plan_type,
+    rx_market_category_code_id AS market_category_code
+FROM eligibility_ci;
+END;
+/
+
+________________________________________________________________________________
+Follow up question:
+
+Can you recheck the mapping for table eligibility_ci column phm_first_name_val?
+
+
+____________________________________________________________________
+Invalid inputs:
+Please write me a basic react Hello world App.
+
+Expectation:
+Gaurdrail should stop this
+
+
