@@ -10,7 +10,7 @@ type ChatPageProps = {
 };
 
 export default function ChatPage({ chatid = null }: ChatPageProps) {
-    const chatId = chatid || uuidv4();
+    const [chatId] = useState(() => chatid ?? uuidv4());
     const socket = useRef<WebSocket | null>(null);
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
@@ -28,7 +28,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
     useEffect(() => {
         const getChatHistory = () => {
             setIsFetching(true)
-            fetch(`http://localhost:8000/chats/${chatid}`)
+            fetch(`http://localhost:8000/chats/${chatId}`)
                 .then(res => res.json())
                 .then(data => {
                     const history = data.map((d: { role: string, message: string }) => ({
@@ -49,14 +49,22 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
 
         socket.current.onmessage = (e) => {
             const chunk = e.data;
-            setMessages(prev => {
-                const last = prev[prev.length - 1];
-                if (last?.role === 'assistant') {
-                    return [...prev.slice(0, -1), { role: 'assistant', content: last.content + chunk }];
-                } else {
-                    return [...prev, { role: 'assistant', content: chunk }];
-                }
-            });
+            if (chunk === "[END]" && chatid == null) {
+                socket?.current?.close();
+                setTimeout(() => {
+                    window.location.href = `/c/${chatId}`;
+                }, 200);
+                return;
+            } else if (chunk !== "[END]") {
+                setMessages(prev => {
+                    const last = prev[prev.length - 1];
+                    if (last?.role === 'assistant') {
+                        return [...prev.slice(0, -1), { role: 'assistant', content: last.content + chunk }];
+                    } else {
+                        return [...prev, { role: 'assistant', content: chunk }];
+                    }
+                });
+            }
             setIsStreaming(false);
         };
 
@@ -65,7 +73,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
         };
 
         return () => socket.current?.close();
-    }, [chatid]);
+    }, [chatId, chatid]);
 
 
     const sendMessage = async (e: FormEvent | null, overrideInput?: string) => {
@@ -83,8 +91,6 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
                 thread_id: chatId
             }));
         }
-
-        setIsStreaming(false);
     };
 
 
@@ -137,7 +143,19 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
                         }
                     </div>
                 ))}
-                {isStreaming && <ChatSkeleton />}
+                {isStreaming && (
+                    <div className='flex gap-1'>
+                        <span>🤖</span>
+                        <div className="animate-pulse">
+                            <div className="animate-bounce">
+                                <span className="relative flex size-2">
+                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gray-500 opacity-90"></span>
+                                    <span className="relative inline-flex size-2 rounded-full bg-gray-700"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div

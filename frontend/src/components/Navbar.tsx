@@ -48,7 +48,7 @@ const Navbar = () => {
                 <button className="cursor-pointer text-2xl font-bold" onClick={() => setIsOpen(true)}>
                     ≣
                 </button>
-                <Link href="/" className="font-medium">🤖 PL/SQL Auditor</Link>
+                <a href="/" className="font-medium">🤖 PL/SQL Auditor</a>
             </div>
             <Drawer
                 open={isOpen}
@@ -58,7 +58,7 @@ const Navbar = () => {
                 className="p-3"
             >
                 <div className="flex justify-between items-center">
-                    <Link href="/" className="font-medium text-2xl">🤖</Link>
+                    <a href="/" className="font-medium text-2xl">🤖</a>
                     <button onClick={() => setIsOpen(false)} className="cursor-pointer text-2xl">&times;</button>
                 </div>
                 <div className="mt-5">
