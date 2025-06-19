@@ -1,3 +1,37 @@
+Can you please verify this script?
+
+BEGIN
+INSERT INTO standard_eligibility (
+    member_id, first_name, last_name, date_of_birth, gender, address, city, state, zip_code, plan_id, group_number, coverage_start_date, coverage_end_date, coverage_level_code, subscriber_indicator, product_category_code, plan_type, market_category_code
+)
+SELECT
+    mem_member_id AS member_id,
+    first_name_id AS first_name,
+    mem_last_name AS last_name,
+    date_of_birth AS date_of_birth,
+    phm_gender_val AS gender,
+    clm_address AS address,
+    city AS city,
+    rx_state_val AS state,
+    phm_zip_code_val AS zip_code,
+    mem_plan_id AS plan_id,
+    clm_group_number AS group_number,
+    clm_coverage_start_date AS coverage_start_date,
+    phm_coverage_end_date AS coverage_end_date,
+    mem_coverage_level_code AS coverage_level_code,
+    clm_subscriber_indicator AS subscriber_indicator,
+    rx_product_category_code_val AS product_category_code,
+    rx_plan_type AS plan_type,
+    rx_market_category_code_val AS market_category_code
+FROM eligibility_payer_1;
+END;
+/
+
+Can you please use client UHC for table eligibility_payer_1?
+
+Please use the one from our initial conversation.
+
+________________________________________________________________________________
 Single: With client name specified
 Please validate this script for client United Healthcare:
 

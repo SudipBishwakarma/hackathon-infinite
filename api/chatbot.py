@@ -1,3 +1,4 @@
+import re
 import asyncio
 from typing import AsyncGenerator, List, Dict
 from langchain_core.exceptions import OutputParserException
@@ -13,10 +14,21 @@ from rag.vector_store import format_context
 config = Config()
 logger = Logger.get_logger(name=config.app_name, level=config.log_level)
 
+def regex_extract(sql: str) -> list[dict]:
+    tables = re.findall(r'(?:FROM|INTO|TABLE)\s+([A-Za-z0-9_]+)', sql, re.IGNORECASE)
+    cols   = re.findall(r'([A-Za-z0-9_]+)\s+(?:NUMBER|VARCHAR2|DATE)', sql, re.IGNORECASE)
+    return [
+        {"table_name": t, "columns": list(set(cols)), "client_name": ""}
+        for t in set(tables)
+    ]
+
 def format_history(history: list[dict]) -> list[AIMessage | HumanMessage]:
     """Format the chat history to Langchain message objects."""
     formatted_history = []
     for message in history:
+        if not message['message']:
+            message['message'] = ""
+
         if message['role'] == RoleEnum.user:
             formatted_history.append(HumanMessage(content=message['message']))
         elif message['role'] == RoleEnum.assistant:
@@ -38,7 +50,7 @@ def start_chat(question: str, history: list[dict]) -> tuple:
                 return ai_message_guardrail.get("markdown"), None
         except Exception as e:
             logger.error(f"Guardrail chain failed: {e}")
-            return "Please ask me questions related to PL/SQL.", None
+            return "Something happened. Please try again.", None
 
         try:
             ai_message_feature_extractor: dict = feature_extractor_chain.invoke({"history": chat_history, "question": question})
@@ -49,12 +61,15 @@ def start_chat(question: str, history: list[dict]) -> tuple:
             logger.error(f"Feature extractor chain failed: {e}")
             ai_message_feature_extractor = {}
 
-        context = ""
         if ai_message_feature_extractor:
-            features = ai_message_feature_extractor.get("tables")
-            # RAG Implementation: Fetch context based on features from vector db
-            context = template["context"].invoke({"knowledgebase": format_context(features)})
-            logger.debug(f"***Context:\n{context.to_string()}")
+            features = ai_message_feature_extractor.get("tables", [])
+        else:
+            features = regex_extract(question)
+            logger.debug(f"***Feature Extractor Regex Fallback:\n{features}")
+
+        # RAG Implementation: Fetch context based on features from vector db
+        context = template["context"].invoke({"knowledgebase": format_context(features)})
+        logger.debug(f"***Context:\n{context.to_string()}")
 
         ai_message_auditor = auditor_chain.invoke({"history": chat_history, "context": context, "question": question})
         auditor_prompt = template["auditor"].invoke({"history": chat_history, "context": context, "question": question}).to_string()
@@ -98,7 +113,7 @@ async def start_chat_stream(question: str, history: List[Dict]) -> AsyncGenerato
                 return
         except Exception as e:
             logger.error(f"Guardrail chain failed: {e}")
-            yield "Please ask me questions related to PL/SQL."
+            yield "Something happened. Please try again."
             return
 
         # Feature Extractor
@@ -117,12 +132,15 @@ async def start_chat_stream(question: str, history: List[Dict]) -> AsyncGenerato
             ai_message_feature_extractor = {}
 
         # Context
-        context = ""
         if ai_message_feature_extractor:
             features = ai_message_feature_extractor.get("tables")
-            # RAG Implementation: Fetch context based on features from vector db
-            context = template["context"].invoke({"knowledgebase": format_context(features)})
-            logger.debug(f"***Context:\n{context.to_string()}")
+        else:
+            features = regex_extract(question)
+            logger.debug(f"***Feature Extractor Regex Fallback:\n{features}")
+
+        # RAG Implementation: Fetch context based on features from vector db
+        context = template["context"].invoke({"knowledgebase": format_context(features)})
+        logger.debug(f"***Context:\n{context.to_string()}")
 
         # Auditor
         ai_message_auditor = auditor_chain.invoke({
