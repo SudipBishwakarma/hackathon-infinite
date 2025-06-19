@@ -41,7 +41,7 @@ def fetch_from_vector_store(features: dict) -> dict:
     data["dd"] = "\n\n".join(data["dd"])
     return data
 
-def format_context(features: dict) -> str:
+def format_context(features: list[dict]) -> str:
     """Formats the fetched data into a context string."""
     # Prepare data from vector store
     list_data = []
