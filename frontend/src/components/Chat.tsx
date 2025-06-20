@@ -64,8 +64,9 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
                         return [...prev, { role: 'assistant', content: chunk }];
                     }
                 });
+            } else {
+                setIsStreaming(false);
             }
-            setIsStreaming(false);
         };
 
         socket.current.onclose = () => {
