@@ -46,7 +46,8 @@ def format_context(features: list[dict]) -> str:
     # Prepare data from vector store
     list_data = []
     for feature in features:
-        list_data.append(fetch_from_vector_store(feature))
+        if feature.get("client_name"):
+            list_data.append(fetch_from_vector_store(feature))
 
     context = ""
     for item in list_data:
