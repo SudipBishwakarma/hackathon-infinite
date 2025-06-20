@@ -163,6 +163,15 @@ async def websocket_chat(
                 await websocket.send_text("Invalid request.")
                 continue
 
+            # Fetch history
+            chat_history = (
+                db.query(Chat)
+                .filter(Chat.thread_id == thread_id)
+                .order_by(Chat.createdDt.asc())
+                .all()
+            )
+            chat_history_list = [{"role": chat.role, "message": chat.message} for chat in chat_history]
+
             # Save user message
             user_msg = Chat(
                 thread_id=thread_id,
@@ -172,15 +181,6 @@ async def websocket_chat(
             )
             db.add(user_msg)
             db.commit()
-
-            # Fetch history
-            chat_history = (
-                db.query(Chat)
-                .filter(Chat.thread_id == thread_id)
-                .order_by(Chat.createdDt.asc())
-                .all()
-            )
-            chat_history_list = [{"role": chat.role, "message": chat.message} for chat in chat_history]
 
             # Stream assistant response
             full_response = ""
