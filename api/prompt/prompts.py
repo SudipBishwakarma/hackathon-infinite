@@ -98,7 +98,7 @@ You must:
    }}
 
 5. \*Defaults\*:
-   \- If table starts with \`standard_\`, set \`client_name\` to \`Default\`
+   \- If table starts with \`standard_\`, set \`client_name\` to \`Default\`, set \`client_abbr\` to \`default\
    \- If no payer info found, return empty \`payers\` list
 
 """
