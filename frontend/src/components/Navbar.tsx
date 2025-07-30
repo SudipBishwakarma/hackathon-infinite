@@ -14,7 +14,7 @@ const Navbar = () => {
 
     useEffect(() => {
         const getChatHistory = () => {
-            fetch('http://localhost:8000/chats')
+            fetch(`http://${process.env.NEXT_PUBLIC_API_URL}/chats`)
                 .then(res => res.json())
                 .then(data => setChatHistory(data))
         }
@@ -25,7 +25,7 @@ const Navbar = () => {
         try {
             setLoading(true);
 
-            const res = await fetch(`http://localhost:8000/chat/${threadId}`, {
+            const res = await fetch(`http://${process.env.NEXT_PUBLIC_API_URL}/chat/${threadId}`, {
                 method: 'DELETE',
             });
 
