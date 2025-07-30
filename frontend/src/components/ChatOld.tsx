@@ -28,7 +28,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
     useEffect(() => {
         const getChatHistory = () => {
             setIsFetching(true)
-            fetch(`http://localhost:8000/chats/${chatid}`)
+            fetch(`http://${process.env.NEXT_PUBLIC_API_URL}/chats/${chatid}`)
                 .then(res => res.json())
                 .then(data => {
                     const history = data.map((d: { role: string, message: string }) => ({
@@ -43,7 +43,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
 
         if (chatid != null) {
             getChatHistory();
-            socket.current = new WebSocket(`ws://localhost:8000/chat/${chatid}`)
+            socket.current = new WebSocket(`ws://${process.env.NEXT_PUBLIC_API_URL}/chat/${chatid}`)
 
             socket.current.onmessage = (e) => {
                 const chunk = e.data;
@@ -74,7 +74,7 @@ export default function ChatPage({ chatid = null }: ChatPageProps) {
         if (!chatId) {
             // uuid = uuidv4();
             // setChatId(uuid);
-            const res = await fetch('http://localhost:8000/chat', {
+            const res = await fetch(`http://${process.env.NEXT_PUBLIC_API_URL}/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
