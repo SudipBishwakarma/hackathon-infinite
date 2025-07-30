@@ -197,6 +197,7 @@ async def websocket_chat(
                     createdDt=datetime.now(timezone.utc),
                 ))
                 db.commit()
+            await websocket.send_text("[END]")
 
     except WebSocketDisconnect:
         logger.info("WebSocket disconnected.")

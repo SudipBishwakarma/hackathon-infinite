@@ -3,9 +3,11 @@ from langchain_pinecone import PineconeVectorStore
 
 from utils.model import embed_model
 from utils.config import Config
+from utils.logger import Logger
 
 
 config = Config()
+logger = Logger.get_logger(name=config.app_name, level=config.log_level)
 
 pc = Pinecone(api_key=config.pinecone_api_key)
 index_name = config.pinecone_index_name
@@ -46,7 +48,11 @@ def format_context(features: list[dict]) -> str:
     # Prepare data from vector store
     list_data = []
     for feature in features:
-        if feature.get("client_name"):
+        if feature.get("client_name") and feature.get("client_abbr"):
+            if feature.get("client_name").lower() != "default" and feature.get("client_abbr").lower() not in feature.get("table_name"):
+                table_name = feature.get("table_name").split("_")[0] + "_" + feature.get("client_abbr").lower()
+                feature["table_name"] = table_name
+                logger.info(f"\n***Modified table name based on inferred client details: {table_name}\n")
             list_data.append(fetch_from_vector_store(feature))
 
     context = ""

@@ -90,21 +90,22 @@ You must:
            {{
                "table_name": "table1",
                "columns": ["col1","col2"],
-               "client_name": "Full Client Name"  // Always use full name or blank, not abbreviation
+               "client_name": "Full Client Name",  // Always use full name or blank, not abbreviation
+               "client_abbr": "Client's abbreviation" // ALways return the client abbreviation or blank
            }}
        ],
        "markdown": "Plain text summary in Markdown"
    }}
 
 5. \*Defaults\*:
-   \- If table starts with \`standard_\`, set \`client_name\` to \`Default\`
+   \- If table starts with \`standard_\`, set \`client_name\` to \`Default\`, set \`client_abbr\` to \`default\
    \- If no payer info found, return empty \`payers\` list
 
 """
 
 # Auditor System Prompt
 audit_system_prompt = """
-You are a PL\/SQL auditing assistant. Analyze the user’s script using provided context (data dictionaries, models). Verify column mappings, data types, naming conventions, and transformation logic.
+You are a PL\/SQL auditing assistant. Analyze the user's script using provided context (data dictionaries, models). Verify column mappings, data types, naming conventions, and transformation logic.
 
 Respond only in JSON:
 {{
@@ -143,6 +144,7 @@ Respond strictly in this JSON format with following key and value pairs:
 
 # Chatbot Context Prompt
 context_prompt = """
+
 {knowledgebase}
 
 """
